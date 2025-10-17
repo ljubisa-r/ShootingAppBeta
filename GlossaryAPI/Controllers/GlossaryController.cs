@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using GlossaryAPI.Data;
+using GlossaryAPI.Interfaces;
 using GlossaryAPI.Models;
+using GlossaryAPI.DTOs;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace GlossaryAPI.Controllers
 {
@@ -7,92 +11,139 @@ namespace GlossaryAPI.Controllers
     [ApiController]
     public class GlossaryController : ControllerBase
     {
+        //static private List<GlossaryTerm> glossaryTerms = new List<GlossaryTerm>
+        //{
+        //    new GlossaryTerm { Id = 1, Term = "Term 1", Definition = "Published - Definition 1 of term need to be more than 30 chars", CreatedBy = "Admin", Status = ItemStatus.Published },
+        //    new GlossaryTerm { Id = 2, Term = "Term 2", Definition = "Published - Definition 2 of term need to be more than 30 chars", CreatedBy = "Admin", Status = ItemStatus.Published },
+        //    new GlossaryTerm { Id = 3, Term = "Term 3", Definition = "Draft - Definition 3 of term need to be more than 30 chars", CreatedBy = "User", Status =ItemStatus.Draft },
+        //    new GlossaryTerm { Id = 4, Term = "Term 4", Definition = "Archived - Definition 4 of term need to be more than 30 chars", CreatedBy = "User", Status =ItemStatus.Archived }
 
-        static private List<GlossaryTerm> glossaryTerms = new List<GlossaryTerm>
+        //};
+        
+        private readonly IGlossaryService _glossaryService;
+        public GlossaryController(IGlossaryService glossaryService)
         {
-            new GlossaryTerm { Id = 1, Term = "Term 1", Definition = "Published - Definition 1 of term need to be more than 30 chars", CreatedBy = "Admin", Status = ItemStatus.Published },
-            new GlossaryTerm { Id = 2, Term = "Term 2", Definition = "Published - Definition 2 of term need to be more than 30 chars", CreatedBy = "Admin", Status = ItemStatus.Published },
-            new GlossaryTerm { Id = 3, Term = "Term 3", Definition = "Draft - Definition 3 of term need to be more than 30 chars", CreatedBy = "User", Status =ItemStatus.Draft },
-            new GlossaryTerm { Id = 4, Term = "Term 4", Definition = "Archived - Definition 4 of term need to be more than 30 chars", CreatedBy = "User", Status =ItemStatus.Archived }
-
-        };
-
+            _glossaryService = glossaryService;
+        }
 
         [HttpGet]
-        public ActionResult<List<GlossaryTerm>> GetAllTerms()
+        public ActionResult<List<GlossaryTermDTO>> GetAllTerms()
         {
-            return Ok(glossaryTerms);
+            try
+            {
+                var terms = _glossaryService.GetAllTerms();
+                return Ok(terms);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
         [HttpGet("{id}")]
-        public ActionResult<GlossaryTerm> GetTermById(int id)
+        public ActionResult<GlossaryTermDTO> GetTermById(int id)
         {
-            var term = glossaryTerms.FirstOrDefault(t => t.Id == id);
-            if (term == null)
+            try
             {
-                return NotFound();
+                var term = _glossaryService.GetTermById(id);
+                if (term == null)
+                {
+                    return NotFound();
+                }
+                return Ok(term);
             }
-            return Ok(term);
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
 
         [HttpPost]
-        public ActionResult<GlossaryTerm> CreateTerm(GlossaryTerm newTerm)
+        public ActionResult<GlossaryTermDTO> CreateTerm(GlossaryTermDTO newTerm)
         {
-            if (newTerm == null)
-                return BadRequest();
+            try
+            {
+                if (newTerm == null)
+                    return BadRequest("Term data is required");
 
-            glossaryTerms.Add(newTerm); // call action for Add term changes to database if applicable
-            return CreatedAtAction(nameof(GetTermById), new { id = newTerm.Id }, newTerm);
+                var createdTerm = _glossaryService.CreateTerm(newTerm);
+                return CreatedAtAction(nameof(GetTermById), new { id = createdTerm.Id }, createdTerm);
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpPut]
-        public IActionResult UpdateTerm(GlossaryTerm updatedTerm)
+        public IActionResult UpdateTerm(GlossaryTermDTO updatedTerm)
         {
-            var existingTerm = glossaryTerms.FirstOrDefault(t => t.Id == updatedTerm.Id);
-            if (existingTerm == null)
+            try
             {
-                return NotFound();
+                var result = _glossaryService.UpdateTerm(updatedTerm);
+                return NoContent();
             }
-            existingTerm.Term = updatedTerm.Term;
-            existingTerm.Definition = updatedTerm.Definition;
-            existingTerm.CreatedBy = updatedTerm.CreatedBy;
-            existingTerm.Status = updatedTerm.Status;
-
-            // call action for Save term changes to database if applicable
-            return NoContent();
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
 
-        [HttpPut]
-        public IActionResult ArchiveTerm(int id)
+        [HttpPut("{id}")]
+        public IActionResult ArchiveTerm(int id, User user)
         {
-            var existingTerm = glossaryTerms.FirstOrDefault(t => t.Id == id);
-            if (existingTerm == null)
+            try
             {
-                return NotFound();
+                //var user = HttpContext.Items["User"] as User;
+                if (user == null)
+                    return Unauthorized();
+
+                var result = _glossaryService.ArchiveTerm(id, user.Username);
+                return NoContent();
             }
-            var user = HttpContext.Items["User"] as User;  // Assume user is set in middleware
-
-            if (existingTerm.CreatedBy != user.Username)
-                return Forbid();
-
-            existingTerm.Status = ItemStatus.Archived;
-            // call action for Save term changes to database if applicable
-            return NoContent();
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Forbid(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
-            [HttpDelete("{id}")]
+        [HttpDelete("{id}")]
         public IActionResult DeleteTerm(int id)
         {
-            var term = glossaryTerms.FirstOrDefault(t => t.Id == id);
-            if (term == null)            
-                return NotFound();
-            
-            if (term.Status != 0)
-                    return Forbid();
-
-            glossaryTerms.Remove(term); // call action for Delete term changes form database if applicable
-            return NoContent();
+            try
+            {
+                _glossaryService.DeleteTerm(id);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }

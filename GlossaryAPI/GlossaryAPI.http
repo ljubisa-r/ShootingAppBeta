@@ -15,9 +15,9 @@ Accept: application/json
 POST {{rootURL}}/api/glossary
 Content-Type: application/json
 {
-  "id": 5,  
-  "term": "New term",
-  "definition": "Test is it added new term",
+  "id":0,
+  "term": "New term 1",
+  "definition": "Test 1 is it added new term",
   "createdBy": "Admin", 
   "status": 0
 }
@@ -26,11 +26,21 @@ Content-Type: application/json
 PUT {{rootURL}}/api/glossary
 Content-Type: application/json
 {
-  "id": 5,  
+  "id": 4,  
   "term": "New term UPDATED",
   "definition": "Test is it added new term",
   "createdBy": "User", 
   "status": 0
+}
+
+###
+PUT {{rootURL}}/api/glossary/3
+Content-Type: application/json
+{
+  
+  "Email": "ljubisa@gmail.com",
+  "Username": "Ljubisa"
+ 
 }
 
 ###

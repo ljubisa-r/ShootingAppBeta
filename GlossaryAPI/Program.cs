@@ -1,3 +1,7 @@
+using GlossaryAPI.Data;
+using GlossaryAPI.Interfaces;
+using GlossaryAPI.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace GlossaryAPI
 {
@@ -13,6 +17,15 @@ namespace GlossaryAPI
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // DbContext
+            builder.Services.AddDbContext<GlossaryDbContext>(options => options.UseSqlServer(
+                builder.Configuration.GetConnectionString("DefaultConnection")
+                ));
+            // Register services
+            builder.Services.AddScoped<IGlossaryService, GlossaryService>();
+
+
 
             var app = builder.Build();
 
