@@ -1,6 +1,38 @@
-@GlossaryAPI_HostAddress = http://localhost:5006
+@rootURL = http://localhost:5006
 
-GET {{GlossaryAPI_HostAddress}}/weatherforecast/
+GET {{rootURL}}/weatherforecast/
 Accept: application/json
 
 ###
+GET {{rootURL}}/api/glossary
+Accept: application/json
+
+###
+GET {{rootURL}}/api/glossary/2
+Accept: application/json
+
+###
+POST {{rootURL}}/api/glossary
+Content-Type: application/json
+{
+  "id": 5,  
+  "term": "New term",
+  "definition": "Test is it added new term",
+  "createdBy": "Admin", 
+  "status": 0
+}
+
+###
+PUT {{rootURL}}/api/glossary
+Content-Type: application/json
+{
+  "id": 5,  
+  "term": "New term UPDATED",
+  "definition": "Test is it added new term",
+  "createdBy": "User", 
+  "status": 0
+}
+
+###
+DELETE {{rootURL}}/api/glossary/2
+Accept: application/json
