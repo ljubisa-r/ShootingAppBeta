@@ -1,9 +1,7 @@
-﻿using GlossaryAPI.Data;
-using GlossaryAPI.Interfaces;
+﻿using GlossaryAPI.Interfaces;
 using GlossaryAPI.Models;
 using GlossaryAPI.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 
 namespace GlossaryAPI.Controllers
 {
@@ -79,7 +77,7 @@ namespace GlossaryAPI.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut("update")]
         public IActionResult UpdateTerm(GlossaryTermDTO updatedTerm)
         {
             try
@@ -108,6 +106,34 @@ namespace GlossaryAPI.Controllers
                     return Unauthorized();
 
                 var result = _glossaryService.ArchiveTerm(id, user.Username);
+                
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Forbid(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("publish")]
+        public IActionResult PublishTerm(GlossaryTermDTO updatedTerm)
+        {
+            try
+            {
+                var user = HttpContext.Items["User"] as User; // User from token
+                if (user == null)
+                    return Unauthorized();
+
+                var result = _glossaryService.PublishTerm(updatedTerm);
+
                 return NoContent();
             }
             catch (KeyNotFoundException ex)

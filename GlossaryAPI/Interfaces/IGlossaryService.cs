@@ -9,6 +9,7 @@ namespace GlossaryAPI.Interfaces
         GlossaryTermDTO CreateTerm(GlossaryTermDTO newTerm);
         GlossaryTermDTO UpdateTerm(GlossaryTermDTO updatedTerm);
         GlossaryTermDTO ArchiveTerm(int id, string currentUsername);
+        GlossaryTermDTO PublishTerm(GlossaryTermDTO updatedTerm);
         void DeleteTerm(int id);
     }
 }

@@ -1,5 +1,7 @@
 using GlossaryAPI.Data;
+using GlossaryAPI.DTOs;
 using GlossaryAPI.Interfaces;
+using GlossaryAPI.Repositories;
 using GlossaryAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,8 +24,14 @@ namespace GlossaryAPI
             builder.Services.AddDbContext<GlossaryDbContext>(options => options.UseSqlServer(
                 builder.Configuration.GetConnectionString("DefaultConnection")
                 ));
+            // Register repositories
+            builder.Services.AddScoped<IGlossaryRepository, GlossaryRepository>();
+
             // Register services
             builder.Services.AddScoped<IGlossaryService, GlossaryService>();
+            builder.Services.AddScoped<GlossaryTermValidator>();
+
+
 
 
 
