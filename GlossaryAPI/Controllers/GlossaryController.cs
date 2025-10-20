@@ -1,23 +1,17 @@
-﻿using GlossaryAPI.Interfaces;
-using GlossaryAPI.Models;
-using GlossaryAPI.DTOs;
+﻿using GlossaryAPI.DTOs;
+using GlossaryAPI.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace GlossaryAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class GlossaryController : ControllerBase
     {
-        //static private List<GlossaryTerm> glossaryTerms = new List<GlossaryTerm>
-        //{
-        //    new GlossaryTerm { Id = 1, Term = "Term 1", Definition = "Published - Definition 1 of term need to be more than 30 chars", CreatedBy = "Admin", Status = ItemStatus.Published },
-        //    new GlossaryTerm { Id = 2, Term = "Term 2", Definition = "Published - Definition 2 of term need to be more than 30 chars", CreatedBy = "Admin", Status = ItemStatus.Published },
-        //    new GlossaryTerm { Id = 3, Term = "Term 3", Definition = "Draft - Definition 3 of term need to be more than 30 chars", CreatedBy = "User", Status =ItemStatus.Draft },
-        //    new GlossaryTerm { Id = 4, Term = "Term 4", Definition = "Archived - Definition 4 of term need to be more than 30 chars", CreatedBy = "User", Status =ItemStatus.Archived }
-
-        //};
-        
+                
         private readonly IGlossaryService _glossaryService;
         public GlossaryController(IGlossaryService glossaryService)
         {
@@ -63,8 +57,10 @@ namespace GlossaryAPI.Controllers
             {
                 if (newTerm == null)
                     return BadRequest("Term data is required");
+                int userId = GetUserId();
 
-                var createdTerm = _glossaryService.CreateTerm(newTerm);
+                var createdTerm = _glossaryService.CreateTerm(newTerm, userId);
+                
                 return CreatedAtAction(nameof(GetTermById), new { id = createdTerm.Id }, createdTerm);
             }
             catch (ArgumentNullException ex)
@@ -82,7 +78,8 @@ namespace GlossaryAPI.Controllers
         {
             try
             {
-                var result = _glossaryService.UpdateTerm(updatedTerm);
+                int userId = GetUserId();
+                var result = _glossaryService.UpdateTerm(updatedTerm, userId);
                 return NoContent();
             }
             catch (KeyNotFoundException ex)
@@ -97,15 +94,12 @@ namespace GlossaryAPI.Controllers
 
 
         [HttpPut("{id}")]
-        public IActionResult ArchiveTerm(int id, User user)
+        public IActionResult ArchiveTerm(int id)
         {
             try
             {
-                //var user = HttpContext.Items["User"] as User;
-                if (user == null)
-                    return Unauthorized();
-
-                var result = _glossaryService.ArchiveTerm(id, user.Username);
+                int userId = GetUserId();
+                var result = _glossaryService.ArchiveTerm(id, userId);
                 
                 return NoContent();
             }
@@ -128,11 +122,8 @@ namespace GlossaryAPI.Controllers
         {
             try
             {
-                var user = HttpContext.Items["User"] as User; // User from token
-                if (user == null)
-                    return Unauthorized();
-
-                var result = _glossaryService.PublishTerm(updatedTerm);
+                int userId = GetUserId();
+                var result = _glossaryService.PublishTerm(updatedTerm, userId);
 
                 return NoContent();
             }
@@ -155,7 +146,8 @@ namespace GlossaryAPI.Controllers
         {
             try
             {
-                _glossaryService.DeleteTerm(id);
+                int userId = GetUserId();
+                _glossaryService.DeleteTerm(id, userId);
                 return NoContent();
             }
             catch (KeyNotFoundException ex)
@@ -170,6 +162,13 @@ namespace GlossaryAPI.Controllers
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
+        }
+
+        private int GetUserId()
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null) throw new UnauthorizedAccessException("User ID not found in token");
+            return int.Parse(userIdClaim);
         }
     }
 }

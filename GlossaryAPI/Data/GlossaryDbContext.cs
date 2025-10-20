@@ -13,6 +13,10 @@ namespace GlossaryAPI.Data
             modelBuilder.Entity<GlossaryTerm>()
                 .Property(e => e.Status)
                 .HasConversion<string>();
+           
+            modelBuilder.Entity<User>()
+                .Property(e => e.Role)
+                .HasConversion<string>();
         }
 
         public DbSet<GlossaryTerm> GlossaryTerms { get; set; } = null!;
