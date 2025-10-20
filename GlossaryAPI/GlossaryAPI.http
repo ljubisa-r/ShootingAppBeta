@@ -1,9 +1,5 @@
 @rootURL = http://localhost:5006
 
-GET {{rootURL}}/weatherforecast/
-Accept: application/json
-
-
 ###
 GET {{rootURL}}/api/glossary
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwibmJmIjoxNzYwODc0Nzc3LCJleHAiOjE3NjA4NzgzNzcsImlhdCI6MTc2MDg3NDc3NywiaXNzIjoiR2xvc3NhcnlBUEkiLCJhdWQiOiJHbG9zc2FyeUFQSVVzZXJzIn0.-Ct8v2xzzYUBBB5vIhUtt7OcMerTGG8YCBU22EQgNLA
