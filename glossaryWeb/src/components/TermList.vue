@@ -8,7 +8,7 @@
             <th>ID</th>
             <th>Term</th>
             <th>Definition</th>
-            <th>Author</th>
+            <th>AuthorId</th>
             <th>Status</th>
             <th>
               <template v-if="token">
@@ -70,94 +70,81 @@
 </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import DeleteButton from './DeleteButton.vue'
 import PublishButton from './PublishButton.vue'
 import ArchiveButton from './ArchiveButton.vue'
 import TermForm from './TermForm.vue'
- 
-export default {
-  name: 'TermList',
- 
-  components: {
-    DeleteButton,
-    PublishButton,
-    ArchiveButton,
-    TermForm
-  },
- 
-  data() {
-    return {
-      terms: [],
-      loading: true,
-      error: null,
-      token: localStorage.getItem('jwtToken'),
-      selectedTerm: null,
-      showModal: false
-    }
-  },
- 
-  methods: {
-    async fetchTerms() {
-      this.loading = true
-      this.error = null
-        try {
-        const response = await axios.get('https://localhost:7082/api/Glossary')
-        this.terms = response.data
-      } catch (err) {
-        console.error(err)
-        this.error = 'Failed to fetch terms'
-      } finally {
-        this.loading = false
-      }
-    },
-    removeTerm(id) {
-      this.terms = this.terms.filter(term => term.id !== id)
-    },
-    editTerm(item) {
-      this.selectedTerm = item;
-      this.showModal = true;
-    },
-    newTerm() {      
-      this.selectedTerm = {
-          id: 0,
-          term: '',
-          definition: '',
-          status: 0,
-          createdBy: 0
-        };
-      this.showModal = true;
-    },
-    onArchived() {
-      this.selectedTerm.status = "Archived"    
-    },
-    closeModal () {
-      this.showModal = false;
-      this.selectedTerm = null;
-      window.location.reload();
-    },
-    getStatusLabel  (status)  {
-      switch (status) {
-      case 0:
-        return 'Draft'
-      case 1:
-        return 'Published'
-      case 2:
-        return 'Archived'
-      default:
-        return 'Unknown'
-    }
-}
-  },
- 
-  mounted() {
-    this.fetchTerms()
+
+// state
+const terms = ref([])
+const loading = ref(true)
+const error = ref(null)
+const token = ref(localStorage.getItem('jwtToken'))
+const selectedTerm = ref(null)
+const showModal = ref(false)
+
+// metode
+const fetchTerms = async () => {
+  loading.value = true
+  error.value = null
+  try {
+    const response = await axios.get('https://localhost:7082/api/Glossary')
+    terms.value = response.data
+  } catch (err) {
+    console.error(err)
+    error.value = 'Failed to fetch terms'
+  } finally {
+    loading.value = false
   }
 }
 
-</script>
+const removeTerm = (id) => {
+  terms.value = terms.value.filter(term => term.id !== id)
+}
 
+const editTerm = (item) => {
+  selectedTerm.value = item
+  showModal.value = true
+}
+
+const newTerm = () => {
+  selectedTerm.value = {
+    id: 0,
+    term: '',
+    definition: '',
+    status: 0,
+    createdBy: 0
+  }
+  showModal.value = true
+}
+
+const closeModal = () => {
+  showModal.value = false
+  selectedTerm.value = null
+  window.location.reload()
+}
+
+const getStatusLabel = (status) => {
+  switch (status) {
+    case 0:
+      return 'Draft'
+    case 1:
+      return 'Published'
+    case 2:
+      return 'Archived'
+    default:
+      return 'Unknown'
+  }
+}
+
+// lifecycle
+onMounted(() => {
+  fetchTerms()
+})
+</script>
 
 <style scoped>
 /* Jednostavan stil za modal */

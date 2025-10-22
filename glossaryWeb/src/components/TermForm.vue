@@ -58,8 +58,7 @@ const saveChanges = async () => {
           }
         );
     props.term.id=response.data.id;
-    alert('Term added successfully!');    
-     
+    alert('Term added successfully!');      
     } 
     else {  // azuriranje terma 
       await axios.put('https://localhost:7082/api/Glossary/update',
