@@ -17,8 +17,9 @@ namespace GlossaryAPI.Controllers
         {
             _glossaryService = glossaryService;
         }
-
+        
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult<List<GlossaryTermDTO>> GetAllTerms()
         {
             try
@@ -61,7 +62,7 @@ namespace GlossaryAPI.Controllers
 
                 var createdTerm = _glossaryService.CreateTerm(newTerm, userId);
                 
-                return CreatedAtAction(nameof(GetTermById), new { id = createdTerm.Id }, createdTerm);
+                return CreatedAtAction(nameof(GetTermById), new { id = createdTerm.id }, createdTerm);
             }
             catch (ArgumentNullException ex)
             {

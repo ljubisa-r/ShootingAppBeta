@@ -7,15 +7,15 @@
         {
             if (term == null)
                 throw new ArgumentNullException(nameof(term));
-            if (string.IsNullOrWhiteSpace(term.Term))
+            if (string.IsNullOrWhiteSpace(term.term))
                 throw new ArgumentException("Term name is required.");
-            if (string.IsNullOrWhiteSpace(term.Definition) || term.Definition.Length <= 30)
+            if (string.IsNullOrWhiteSpace(term.definition) || term.definition.Length <= 30)
                 throw new UnauthorizedAccessException("Definition must be longer than 30 characters.");
             
             var forbiddenWords = new[] { "lorem", "test", "sample" };
            
             var found = forbiddenWords
-                .Where(word => term.Definition.Contains(word, StringComparison.OrdinalIgnoreCase))
+                .Where(word => term.definition.Contains(word, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
             if (found.Any())

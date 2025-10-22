@@ -49,6 +49,17 @@ namespace GlossaryAPI
 
             });
 
+            // CORS policy
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFrontend", policy =>
+                {
+                    policy.WithOrigins("http://localhost:5173")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
+
             // DbContext
             builder.Services.AddDbContext<GlossaryDbContext>(options => options.UseSqlServer(
                 builder.Configuration.GetConnectionString("DefaultConnection")
@@ -68,8 +79,8 @@ namespace GlossaryAPI
 
             builder.Services.AddAuthentication(options =>
             {
-                  options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                  options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>
             {
@@ -101,10 +112,10 @@ namespace GlossaryAPI
             }
 
             app.UseHttpsRedirection();
+            app.UseCors("AllowFrontend");
 
             app.UseAuthentication(); // before UseAuthorization
             app.UseAuthorization();
-
 
             app.MapControllers();
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using GlossaryAPI.Models;   
+using GlossaryAPI.Models; 
+using GlossaryAPI.DTOs;
 
 namespace GlossaryAPI.Data
 {
@@ -13,7 +14,11 @@ namespace GlossaryAPI.Data
             modelBuilder.Entity<GlossaryTerm>()
                 .Property(e => e.Status)
                 .HasConversion<string>();
-           
+
+            modelBuilder.Entity<GlossaryTermDTO>()
+                .Property(e => e.status)
+                .HasConversion<string>();
+
             modelBuilder.Entity<User>()
                 .Property(e => e.Role)
                 .HasConversion<string>();

@@ -21,12 +21,14 @@ namespace GlossaryAPI.Services
         public IEnumerable<GlossaryTermDTO> GetAllTerms()
         {
             var items = _repositoryGlossary.GetAll()
+            .Where(item => item.Status != ItemStatus.Archived)
             .Select(item => new GlossaryTermDTO
             {
-                Id = item.Id,
-                Term = item.Term,
-                Definition = item.Definition,
-                Status = item.Status
+                id = item.Id,
+                term = item.Term,
+                definition = item.Definition,
+                status = item.Status,
+                createdBy = item.CreatedBy
             })
             .ToList();
 
@@ -41,10 +43,10 @@ namespace GlossaryAPI.Services
             
             var termDto = new GlossaryTermDTO
             {
-                Id = term.Id,
-                Term = term.Term,
-                Definition = term.Definition,
-                Status = term.Status
+                id = term.Id,
+                term = term.Term,
+                definition = term.Definition,
+                status = term.Status
             };
 
             return termDto;
@@ -59,42 +61,42 @@ namespace GlossaryAPI.Services
 
             var newTerm = new GlossaryTerm
             {
-                Term = newTermDto.Term,
-                Definition = newTermDto.Definition,
-                CreatedBy = currentUser.Username,
+                Term = newTermDto.term,
+                Definition = newTermDto.definition,
+                CreatedBy = currentUser.Id,
                 Status = ItemStatus.Draft
             };
 
             _repositoryGlossary.Add(newTerm);
             _repositoryGlossary.SaveChanges();
             
-            newTermDto.Id = newTerm.Id;
-            newTermDto.Status = newTerm.Status;
+            newTermDto.id = newTerm.Id;
+            newTermDto.status = newTerm.Status;
 
             return newTermDto;
         }
 
         public GlossaryTermDTO UpdateTerm(GlossaryTermDTO updatedTerm, int userId)
         {
-            var existingTerm = _repositoryGlossary.GetById(updatedTerm.Id);
+            var existingTerm = _repositoryGlossary.GetById(updatedTerm.id);
             if (existingTerm == null)
-                throw new KeyNotFoundException($"Term with ID {updatedTerm.Id} not found");
+                throw new KeyNotFoundException($"Term with ID {updatedTerm.id} not found");
 
             User currentUser = GetUserFromDb(userId);
 
-            existingTerm.Term = updatedTerm.Term;
-            existingTerm.Definition = updatedTerm.Definition;
-            existingTerm.CreatedBy = currentUser.Username;
-            existingTerm.Status = updatedTerm.Status;
+            existingTerm.Term = updatedTerm.term;
+            existingTerm.Definition = updatedTerm.definition;
+            existingTerm.CreatedBy = currentUser.Id;
+            existingTerm.Status = updatedTerm.status;
 
             _repositoryGlossary.SaveChanges();
             
             var termDto = new GlossaryTermDTO
             {
-                Id = existingTerm.Id,
-                Term = existingTerm.Term,
-                Definition = existingTerm.Definition,
-                Status = existingTerm.Status
+                id = existingTerm.Id,
+                term = existingTerm.Term,
+                definition = existingTerm.Definition,
+                status = existingTerm.Status
             };
 
             return termDto;
@@ -103,27 +105,27 @@ namespace GlossaryAPI.Services
       
         public GlossaryTermDTO PublishTerm(GlossaryTermDTO updatedTerm, int userId)
         {
-            var existingTerm = _repositoryGlossary.GetById(updatedTerm.Id); ;
+            var existingTerm = _repositoryGlossary.GetById(updatedTerm.id);
             if (existingTerm == null)
-                throw new KeyNotFoundException($"Term with ID {updatedTerm.Id} not found");
+                throw new KeyNotFoundException($"Term with ID {updatedTerm.id} not found");
 
             _validator.ValidateTermForPublish(updatedTerm);
 
             User currentUser = GetUserFromDb(userId);
 
-            existingTerm.Term = updatedTerm.Term;
-            existingTerm.Definition = updatedTerm.Definition;
-            existingTerm.CreatedBy = currentUser.Username;
+            existingTerm.Term = updatedTerm.term;
+            existingTerm.Definition = updatedTerm.definition;
+            existingTerm.CreatedBy = currentUser.Id;
             existingTerm.Status = ItemStatus.Published;
 
             _repositoryGlossary.SaveChanges();
 
             var termDto = new GlossaryTermDTO
             {
-                Id = existingTerm.Id,
-                Term = existingTerm.Term,
-                Definition = existingTerm.Definition,
-                Status = existingTerm.Status
+                id = existingTerm.Id,
+                term = existingTerm.Term,
+                definition = existingTerm.Definition,
+                status = existingTerm.Status
             };
 
             return termDto;
@@ -137,19 +139,15 @@ namespace GlossaryAPI.Services
             if (existingTerm.Status != ItemStatus.Published)
                 throw new InvalidOperationException("Only published terms can be archived");
 
-            User currentUser = GetUserFromDb(userId);
-            if (existingTerm.CreatedBy != currentUser.Username)
-                throw new UnauthorizedAccessException("You can only archive terms created by you");
-
             existingTerm.Status = ItemStatus.Archived;
             _repositoryGlossary.SaveChanges();
 
             var termDto = new GlossaryTermDTO
             {
-                Id = existingTerm.Id,
-                Term = existingTerm.Term,
-                Definition = existingTerm.Definition,
-                Status = existingTerm.Status
+                id = existingTerm.Id,
+                term = existingTerm.Term,
+                definition = existingTerm.Definition,
+                status = existingTerm.Status
             };
 
             return termDto;
@@ -166,8 +164,8 @@ namespace GlossaryAPI.Services
                 throw new InvalidOperationException("Only draft terms can be deleted");
             
             User currentUser = GetUserFromDb(userId);
-            if (term.CreatedBy != currentUser.Username)
-                throw new UnauthorizedAccessException("You can only delete terms that you have created"); //da li je ovo dobar tip greske
+            if (term.CreatedBy != currentUser.Id)
+                throw new InvalidOperationException("You can only delete terms that you have created");
 
             _repositoryGlossary.Delete(term);
             _repositoryGlossary.SaveChanges();
