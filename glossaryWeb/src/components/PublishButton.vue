@@ -8,8 +8,6 @@
 import axios from 'axios'
 import { defineProps} from 'vue'
 
-const userId = localStorage.getItem('userId');
-
 const props = defineProps({
   term: {
     type: Object,
