@@ -40,16 +40,8 @@ namespace GlossaryAPI.Services
             var term = _repositoryGlossary.GetById(id);
             if (term == null)
                 return null;
-            
-            var termDto = new GlossaryTermDTO
-            {
-                id = term.Id,
-                term = term.Term,
-                definition = term.Definition,
-                status = term.Status
-            };
 
-            return termDto;
+            return MapToDto(term);
         }
 
         public GlossaryTermDTO CreateTerm(GlossaryTermDTO newTermDto, int userId)
@@ -69,11 +61,8 @@ namespace GlossaryAPI.Services
 
             _repositoryGlossary.Add(newTerm);
             _repositoryGlossary.SaveChanges();
-            
-            newTermDto.id = newTerm.Id;
-            newTermDto.status = newTerm.Status;
 
-            return newTermDto;
+            return MapToDto(newTerm);
         }
 
         public GlossaryTermDTO UpdateTerm(GlossaryTermDTO updatedTerm, int userId)
@@ -90,16 +79,8 @@ namespace GlossaryAPI.Services
             existingTerm.Status = updatedTerm.status;
 
             _repositoryGlossary.SaveChanges();
-            
-            var termDto = new GlossaryTermDTO
-            {
-                id = existingTerm.Id,
-                term = existingTerm.Term,
-                definition = existingTerm.Definition,
-                status = existingTerm.Status
-            };
 
-            return termDto;
+            return MapToDto(existingTerm);
         }
 
       
@@ -120,15 +101,7 @@ namespace GlossaryAPI.Services
 
             _repositoryGlossary.SaveChanges();
 
-            var termDto = new GlossaryTermDTO
-            {
-                id = existingTerm.Id,
-                term = existingTerm.Term,
-                definition = existingTerm.Definition,
-                status = existingTerm.Status
-            };
-
-            return termDto;
+            return MapToDto(existingTerm);
         }
         public GlossaryTermDTO ArchiveTerm(int id, int userId)
         {
@@ -142,15 +115,7 @@ namespace GlossaryAPI.Services
             existingTerm.Status = ItemStatus.Archived;
             _repositoryGlossary.SaveChanges();
 
-            var termDto = new GlossaryTermDTO
-            {
-                id = existingTerm.Id,
-                term = existingTerm.Term,
-                definition = existingTerm.Definition,
-                status = existingTerm.Status
-            };
-
-            return termDto;
+            return MapToDto(existingTerm);
         }
 
         public void DeleteTerm(int id, int userId)
@@ -177,6 +142,20 @@ namespace GlossaryAPI.Services
             if (user == null)
                 throw new KeyNotFoundException($"User with userId {userId} not found");
             return user;
+        }
+
+        private GlossaryTermDTO MapToDto(GlossaryTerm existingTerm)
+        {
+            if (existingTerm == null)
+                throw new ArgumentNullException(nameof(existingTerm));
+
+            return new GlossaryTermDTO
+            {
+                id = existingTerm.Id,
+                term = existingTerm.Term,
+                definition = existingTerm.Definition,
+                status = existingTerm.Status
+            };
         }
     }
 
