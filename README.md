@@ -15,7 +15,9 @@ You sholud update connection string to your local server with DBuser
 
 2. GlossaryWeb (uses Vue.js 3)
 Install node.js  
-in folder ..\glossaryWeb open terminal and exec command "npm run dev"
+in folder ..\glossaryWeb open terminal and exec command 
+npm install
+npm run dev
 
 
 3. SQL DB Glossary
