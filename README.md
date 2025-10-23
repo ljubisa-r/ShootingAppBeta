@@ -21,3 +21,11 @@ in folder ..\glossaryWeb open terminal and exec command "npm run dev"
 3. SQL DB Glossary
 Execute script on local SQL server "ScriptCreteDBandTablesGlossary.sql"
 Script will create DB Glossar and tebles with pre filled rows in table.
+
+za kreiranje baze moze da se koristi script
+ili EF Migracija terminal otvoriti u folderu gde je cs.proj (u root projekta):
+
+dotnet ef migrations add Init
+dotnet ef database update
+
+dotnet ef migrations remove
