@@ -4,7 +4,7 @@
         {
             User,
             Publisher,
-            Administration,
+            Administration
         }
     
 }

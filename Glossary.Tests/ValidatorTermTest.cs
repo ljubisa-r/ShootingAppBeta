@@ -36,7 +36,7 @@ namespace GlossaryAPI.Tests
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        [InlineData("short definition")]
+        [InlineData("definition less than 30")]
         public void ValidateTermForPublish_Throws_WhenDefinitionIsTooShort(string definition)
         {
             var dto = new GlossaryTermDTO
@@ -50,8 +50,8 @@ namespace GlossaryAPI.Tests
         }
 
         [Theory]
-        [InlineData("This contains lorem ipsum test data.")]
-        [InlineData("A sample sentence with forbidden content.")]
+        [InlineData("Deffinition contains lorem ipsum test data.")]
+        [InlineData("Deffinition with a sample sentence with forbidden content.")]
         [InlineData("Do not use TEST in the definition.")]
         public void ValidateTermForPublish_Throws_WhenDefinitionContainsForbiddenWords(string definition)
         {

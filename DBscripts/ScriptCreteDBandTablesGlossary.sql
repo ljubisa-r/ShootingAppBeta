@@ -1,17 +1,13 @@
-﻿-- ========================================
--- Kreiranje baze Glossary
--- ========================================
+﻿
 CREATE DATABASE Glossary;
 GO
 
 USE Glossary;
 GO
 
--- ========================================
 -- Tabela: Users
--- ========================================
 
-/****** Object:  Table [dbo].[Users]    Script Date: 10/22/2025 10:39:11 PM ******/
+
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Users]') AND type in (N'U'))
 BEGIN
 ALTER TABLE [dbo].[Users] DROP CONSTRAINT [DF_Users_Role]
@@ -19,7 +15,6 @@ DROP TABLE [dbo].[Users]
 END
 GO
 
-/****** Object:  Table [dbo].[Users]    Script Date: 10/22/2025 10:39:11 PM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -43,15 +38,14 @@ ALTER TABLE [dbo].[Users] ADD  CONSTRAINT [DF_Users_Role]  DEFAULT ('User') FOR 
 GO
 
 
--- ========================================
 -- Tabela: GlossaryTerms
--- ========================================
-/****** Object:  Table [dbo].[GlossaryTerms]    Script Date: 10/17/2025 8:50:42 PM ******/
+
+
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GlossaryTerms]') AND type in (N'U'))
 DROP TABLE [dbo].[GlossaryTerms]
 GO
 
-/****** Object:  Table [dbo].[GlossaryTerms]    Script Date: 10/17/2025 7:35:10 PM ******/
+
 SET ANSI_NULLS ON
 GO
 
@@ -71,9 +65,9 @@ CREATE TABLE [dbo].[GlossaryTerms](
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
--- ========================================
--- Primer podataka (seed)
--- ========================================
+
+-- Primer podataka 
+
 
  
 IF  NOT EXISTS (SELECT 1 FROM [dbo].[GlossaryTerms] )

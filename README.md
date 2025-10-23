@@ -6,7 +6,7 @@ Here are instruction to setup localy solution:
   2. GlossaryWeb (uses Vue.js 3)
   3. SQL DB Glossary
 
-Extract zip.file in folder build solution in VS GlossaryAPI
+Extract zip.file in folder build solution in VS "..\GlossaryAPI\GlossaryAPI.sln" 
 
 1. GlossaryAPI 
 in file "..\GlossaryAPI\appsettings.json"
@@ -15,7 +15,7 @@ You sholud update connection string to your local server with DBuser
 
 2. GlossaryWeb (uses Vue.js 3)
 Install node.js  
-in folder ..\glossaryWeb open terminal and exec command npm run dev
+in folder ..\glossaryWeb open terminal and exec command "npm run dev"
 
 
 3. SQL DB Glossary
