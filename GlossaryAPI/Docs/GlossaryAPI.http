@@ -1,0 +1,66 @@
+@rootURL = https://localhost:7082
+
+### AuthController Login request
+POST {{rootURL}}/api/Auth/login
+Accept: application/json
+Content-Type: application/json
+ {
+    "Username": "pub",
+    "Password": "pub123"
+  }
+
+### Get all terms
+GET {{rootURL}}/api/Glossary
+Accept: application/json
+
+### Get by id term 
+GET {{rootURL}}/api/Glossary/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyIiwidW5pcXVlX25hbWUiOiJwdWIiLCJlbWFpbCI6InB1YkBleGFtcGxlLmNvbSIsInJvbGUiOiJQdWJsaXNoZXIiLCJuYmYiOjE3NjEyMTEwODYsImV4cCI6MTc2MTIxNDY4NiwiaWF0IjoxNzYxMjExMDg2LCJpc3MiOiJHbG9zc2FyeUFQSSIsImF1ZCI6Ikdsb3NzYXJ5QVBJVXNlcnMifQ.epnaO8BC_Ty9SbmaBAmcWp1jalAUvi2Ny1BUEu6gAYs
+Accept: application/json
+
+### Create new term
+POST {{rootURL}}/api/Glossary
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyIiwidW5pcXVlX25hbWUiOiJwdWIiLCJlbWFpbCI6InB1YkBleGFtcGxlLmNvbSIsInJvbGUiOiJQdWJsaXNoZXIiLCJuYmYiOjE3NjEyMTEwODYsImV4cCI6MTc2MTIxNDY4NiwiaWF0IjoxNzYxMjExMDg2LCJpc3MiOiJHbG9zc2FyeUFQSSIsImF1ZCI6Ikdsb3NzYXJ5QVBJVXNlcnMifQ.epnaO8BC_Ty9SbmaBAmcWp1jalAUvi2Ny1BUEu6gAYs
+Content-Type: application/json
+{
+  "id":0,
+  "term": "New term 1",
+  "definition": "Definition need to be longer than 30 chars",
+  "createdBy": 2, 
+  "status": 0
+}
+
+### Update term
+PUT {{rootURL}}/api/Glossary/update
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyIiwidW5pcXVlX25hbWUiOiJwdWIiLCJlbWFpbCI6InB1YkBleGFtcGxlLmNvbSIsInJvbGUiOiJQdWJsaXNoZXIiLCJuYmYiOjE3NjEyMTEwODYsImV4cCI6MTc2MTIxNDY4NiwiaWF0IjoxNzYxMjExMDg2LCJpc3MiOiJHbG9zc2FyeUFQSSIsImF1ZCI6Ikdsb3NzYXJ5QVBJVXNlcnMifQ.epnaO8BC_Ty9SbmaBAmcWp1jalAUvi2Ny1BUEu6gAYs
+Content-Type: application/json
+{
+  "id": 4,  
+  "term": "Term update",
+  "definition": "Term with id 4 is updated",
+  "createdBy": 2, 
+  "status": 0
+}
+
+### Publish term
+PUT {{rootURL}}/api/Glossary/publish
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyIiwidW5pcXVlX25hbWUiOiJwdWIiLCJlbWFpbCI6InB1YkBleGFtcGxlLmNvbSIsInJvbGUiOiJQdWJsaXNoZXIiLCJuYmYiOjE3NjEyMTEwODYsImV4cCI6MTc2MTIxNDY4NiwiaWF0IjoxNzYxMjExMDg2LCJpc3MiOiJHbG9zc2FyeUFQSSIsImF1ZCI6Ikdsb3NzYXJ5QVBJVXNlcnMifQ.epnaO8BC_Ty9SbmaBAmcWp1jalAUvi2Ny1BUEu6gAYs
+Content-Type: application/json
+{
+  "id": 11,  
+  "term": "Term 11 update",
+  "definition": "Definition need to be longer than 30 chars",
+  "createdBy": 2, 
+  "status": 1
+}
+
+### Archive term
+PUT {{rootURL}}/api/Glossary/11
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyIiwidW5pcXVlX25hbWUiOiJwdWIiLCJlbWFpbCI6InB1YkBleGFtcGxlLmNvbSIsInJvbGUiOiJQdWJsaXNoZXIiLCJuYmYiOjE3NjEyMTEwODYsImV4cCI6MTc2MTIxNDY4NiwiaWF0IjoxNzYxMjExMDg2LCJpc3MiOiJHbG9zc2FyeUFQSSIsImF1ZCI6Ikdsb3NzYXJ5QVBJVXNlcnMifQ.epnaO8BC_Ty9SbmaBAmcWp1jalAUvi2Ny1BUEu6gAYs
+Content-Type: application/json
+
+
+###
+DELETE {{rootURL}}/api/Glossary/4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyIiwidW5pcXVlX25hbWUiOiJwdWIiLCJlbWFpbCI6InB1YkBleGFtcGxlLmNvbSIsInJvbGUiOiJQdWJsaXNoZXIiLCJuYmYiOjE3NjEyMTEwODYsImV4cCI6MTc2MTIxNDY4NiwiaWF0IjoxNzYxMjExMDg2LCJpc3MiOiJHbG9zc2FyeUFQSSIsImF1ZCI6Ikdsb3NzYXJ5QVBJVXNlcnMifQ.epnaO8BC_Ty9SbmaBAmcWp1jalAUvi2Ny1BUEu6gAYs
+Accept: application/json
