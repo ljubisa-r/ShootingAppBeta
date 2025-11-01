@@ -154,7 +154,9 @@ namespace GlossaryAPI.Services
                 id = existingTerm.Id,
                 term = existingTerm.Term,
                 definition = existingTerm.Definition,
-                status = existingTerm.Status
+                status = existingTerm.Status,
+                createdBy = existingTerm.CreatedBy
+
             };
         }
     }
