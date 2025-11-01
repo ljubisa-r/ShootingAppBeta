@@ -32,7 +32,7 @@ namespace GlossaryAPI.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        [HttpGet("{id}")]
+        [HttpGet("{id}")]       
         public ActionResult<GlossaryTermDTO> GetTermById(int id)
         {
             try
@@ -49,7 +49,6 @@ namespace GlossaryAPI.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
 
         [HttpPost]
         public ActionResult<GlossaryTermDTO> CreateTerm(GlossaryTermDTO newTerm)
@@ -119,6 +118,7 @@ namespace GlossaryAPI.Controllers
         }
 
         [HttpPut("publish")]
+        [Authorize(Roles = "Publisher")]
         public IActionResult PublishTerm(GlossaryTermDTO updatedTerm)
         {
             try

@@ -96,11 +96,41 @@ namespace GlossaryAPI
                     ValidAudience = jwtSettings["Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(key)
                 };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnChallenge = context =>
+                    {
+                        context.HandleResponse(); // Sprecavamo default response
+
+                        context.Response.StatusCode = 401;
+                        context.Response.ContentType = "application/json";
+
+                        var result = System.Text.Json.JsonSerializer.Serialize(new
+                        {
+                            message = "Your session has expired or you are not logged in. Please log in again."
+                        });
+
+                        return context.Response.WriteAsync(result);
+                    },                    
+                    OnForbidden = context =>
+                    {
+                        context.Response.StatusCode = 403;
+                        context.Response.ContentType = "application/json";
+
+                        var result = System.Text.Json.JsonSerializer.Serialize(new
+                        {
+                            message = "You do not have permission to access this resource."
+                        });
+
+                        return context.Response.WriteAsync(result);
+                    }
+
+                };
+
             });
 
             builder.Services.AddAuthorization();
-
-
 
             var app = builder.Build();
 
@@ -111,12 +141,14 @@ namespace GlossaryAPI
                 app.UseSwaggerUI();
             }
 
+           // app.UseMiddleware<ErrorHandlingMiddleware>(); //global exception handler
+
             app.UseHttpsRedirection();
             app.UseCors("AllowFrontend");
 
             app.UseAuthentication(); // before UseAuthorization
             app.UseAuthorization();
-
+                        
             app.MapControllers();
 
             app.Run();
