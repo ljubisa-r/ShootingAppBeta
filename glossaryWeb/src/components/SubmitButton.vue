@@ -5,6 +5,7 @@
 <script setup>
 import axios from 'axios'
 import { useRouter } from 'vue-router'
+import { defineProps } from 'vue'
 
 const props = defineProps({
   username: String,
@@ -28,7 +29,8 @@ const loginUser = async () => {
         const userId = getUserId(token);         
         if (userId) 
           localStorage.setItem('userId', userId);
-          
+        
+        window.dispatchEvent(new Event('tokenChanged'))
         router.push({ path: '/' });    
       } else {
         alert('No token received!');

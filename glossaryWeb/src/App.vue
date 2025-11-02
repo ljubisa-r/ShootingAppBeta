@@ -3,27 +3,52 @@
     <header class="app-header">
       <h1>Glossary App</h1>      
       <LoginButton v-if="!isLoggedIn" />
-      <LogoutButton v-else />
+      <LogoutButton v-else @logout="handleLogout" />
     </header>
 
 <!-- MAIN CONTENT -->
     <main class="content">
       <!-- router-view prikazuje trenutnu rutu -->
-      <router-view />
+      <router-view :key="$route.fullPath" />
     </main>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import LoginButton from './components/LoginButton.vue';
 import LogoutButton from './components/LogoutButton.vue';
 
 const isLoggedIn = ref(false);
 
+
+const checkLogin = () => {
+  isLoggedIn.value = !!localStorage.getItem('jwtToken')
+}
+
+
+const handleLogout = () => {
+  localStorage.removeItem('jwtToken')
+  localStorage.removeItem('userId')
+  checkLogin()
+}
+
 onMounted(() => {
-  isLoggedIn.value = localStorage.getItem('jwtToken')
+  checkLogin()
+
+  // on changes in other tab
+  window.addEventListener('storage', checkLogin)
+
+  // on changes in same tab
+  window.addEventListener('tokenChanged', checkLogin)
 })
+
+
+onBeforeUnmount(() => {
+  window.removeEventListener('storage', checkLogin)
+  window.removeEventListener('tokenChanged', checkLogin)
+})
+
 </script>
 
 <style scoped>
