@@ -10,5 +10,7 @@ namespace GlossaryAPI.Models
         public int CreatedBy { get; set; } 
         public ItemStatus Status { get; set; } = ItemStatus.Draft;
 
+        public User? Creator { get; set; }
+
     }
 }

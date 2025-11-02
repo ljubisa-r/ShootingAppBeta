@@ -6,6 +6,8 @@ namespace GlossaryAPI.Interfaces
     {
         IQueryable<GlossaryTerm> GetAll();
         GlossaryTerm? GetById(int id);
+        IQueryable<GlossaryTerm> GetAllWithCreator();
+
         void Add(GlossaryTerm term);
         void Update(GlossaryTerm term);
         void Delete(GlossaryTerm term);

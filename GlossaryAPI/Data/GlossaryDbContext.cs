@@ -22,6 +22,14 @@ namespace GlossaryAPI.Data
             modelBuilder.Entity<User>()
                 .Property(e => e.Role)
                 .HasConversion<string>();
+
+            modelBuilder.Entity<GlossaryTerm>()
+                .HasOne(t => t.Creator)
+                .WithMany()
+                .HasForeignKey(t => t.CreatedBy)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            base.OnModelCreating(modelBuilder);
         }
 
         public DbSet<GlossaryTerm> GlossaryTerms { get; set; } = null!;

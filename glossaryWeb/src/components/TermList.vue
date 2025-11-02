@@ -8,6 +8,7 @@
             <th>ID</th>
             <th>Term</th>
             <th>Definition</th>
+            <th>CreatedBy</th>
             <th>AuthorId</th>
             <th>Status</th>
             <th>
@@ -33,6 +34,7 @@
             <td>{{ term.id }}</td>
             <td>{{ term.term || '-' }}</td>
             <td>{{ term.definition || '-' }}</td>
+            <td>{{ term.createdName }}</td>
             <td>{{ term.createdBy }}</td>
             <td>{{ getStatusLabel(term.status) }}</td>
 

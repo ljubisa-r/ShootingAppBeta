@@ -9,7 +9,8 @@ namespace GlossaryAPI.DTOs
         public string term { get; set; } = string.Empty;
         public string definition { get; set; } = string.Empty;
         public int createdBy { get; set; }
-        
+        public string createdName { get; set; } = string.Empty;
+
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public ItemStatus status { get; set; } = ItemStatus.Draft;
 

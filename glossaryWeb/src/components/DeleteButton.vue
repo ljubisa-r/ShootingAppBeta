@@ -22,7 +22,7 @@ const handleDelete = async () => {
   if (!confirm(`Are you sure you want to delete term ${props.term.id}?`)) return;
 
   try {    
-    if(userId==props.term.createdBy && props.term.status==0 ){
+    if(userId==props.term.createdBy && props.term.status=="Draft"){
       const token = localStorage.getItem('jwtToken');
       await axios.delete(`https://localhost:7082/api/Glossary/${props.term.id}`, {
       headers: { Authorization: `Bearer ${token}` }

@@ -24,7 +24,8 @@ namespace GlossaryAPI.Controllers
         {
             try
             {
-                var terms = _glossaryService.GetAllTerms();
+               var terms = _glossaryService.GetAllTermsWithUser();
+
                 return Ok(terms);
             }
             catch (Exception ex)

@@ -1,6 +1,7 @@
 ﻿using GlossaryAPI.Data;
-using GlossaryAPI.Models;
 using GlossaryAPI.Interfaces;
+using GlossaryAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GlossaryAPI.Repositories
 {
@@ -14,7 +15,11 @@ namespace GlossaryAPI.Repositories
         }
 
         public IQueryable<GlossaryTerm> GetAll() => _context.GlossaryTerms;
+        public IQueryable<GlossaryTerm> GetAllWithCreator() => _context.GlossaryTerms
+                                                                .Include(t => t.Creator)
+                                                                .Where(x => x.Status != ItemStatus.Archived);
         public GlossaryTerm? GetById(int id) => _context.GlossaryTerms.FirstOrDefault(x => x.Id == id);
+
 
         public void Add(GlossaryTerm term) => _context.GlossaryTerms.Add(term);
         public void Update(GlossaryTerm term) => _context.GlossaryTerms.Update(term);

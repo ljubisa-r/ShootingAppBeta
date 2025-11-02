@@ -1,10 +1,12 @@
 ﻿using GlossaryAPI.DTOs;
+using GlossaryAPI.Models;
 
 namespace GlossaryAPI.Interfaces
 {
     public interface IGlossaryService
     {
         IEnumerable<GlossaryTermDTO> GetAllTerms();
+        IEnumerable<GlossaryTermDTO> GetAllTermsWithUser();
         GlossaryTermDTO? GetTermById(int id);
         GlossaryTermDTO CreateTerm(GlossaryTermDTO newTerm, int userId);
         GlossaryTermDTO UpdateTerm(GlossaryTermDTO updatedTerm, int userId);

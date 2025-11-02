@@ -29,15 +29,36 @@ namespace GlossaryAPI.Services
                 definition = item.Definition,
                 status = item.Status,
                 createdBy = item.CreatedBy
-            })
-            .ToList();
+            }).OrderBy(i =>i.term)
+                .ThenBy(i=>i.definition)
+                .ToList();
 
             return items;
         }
 
+        public IEnumerable<GlossaryTermDTO> GetAllTermsWithUser()
+        {
+            var items = _repositoryGlossary.GetAllWithCreator()
+                .Select(item => new GlossaryTermDTO
+                {
+                    id = item.Id,
+                    term = item.Term,
+                    definition = item.Definition,
+                    status = item.Status,
+                    createdBy = item.CreatedBy,
+                    createdName = item.Creator != null ?  item.Creator.Username : "Unknown"
+                }).OrderBy(i => i.term)
+                    .ThenBy(i => i.definition)
+                    .ToList();
+
+            return items;
+        }
+
+
         public GlossaryTermDTO? GetTermById(int id)
         {
             var term = _repositoryGlossary.GetById(id);
+
             if (term == null)
                 return null;
 
