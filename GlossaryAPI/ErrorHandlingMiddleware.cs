@@ -48,8 +48,8 @@ public class ErrorHandlingMiddleware
                 message = "Requested resource not found.";
                 break;
             case InvalidOperationException:
-                statusCode = (int)HttpStatusCode.NotFound;
-                message = "Requested resource not found.";
+                statusCode = (int)HttpStatusCode.Conflict;
+                message = "The request could not be completed due to a business rule conflict.";
                 break;
             case DbUpdateException:
                 statusCode = (int)HttpStatusCode.InternalServerError;

@@ -10,7 +10,7 @@
             if (string.IsNullOrWhiteSpace(term.term))
                 throw new ArgumentException("Term name is required.");
             if (string.IsNullOrWhiteSpace(term.definition) || term.definition.Length <= 30)
-                throw new UnauthorizedAccessException("Definition must be longer than 30 characters.");
+                throw new InvalidOperationException("Definition must be longer than 30 characters.");
             
             var forbiddenWords = new[] { "lorem", "test", "sample" };
            
@@ -20,7 +20,7 @@
 
             if (found.Any())
             {
-                throw new UnauthorizedAccessException(
+                throw new InvalidOperationException(
                     $"Definition contains forbidden words: {string.Join(", ", found)}.");
             }
         }
